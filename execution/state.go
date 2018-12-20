@@ -38,9 +38,9 @@ import (
 )
 
 const (
-	VersionOffset        uint64 = 1
-	defaultCacheCapacity        = 1024
-	uint64Length                = 8
+	VersionOffset        int64 = 1
+	defaultCacheCapacity       = 1024
+	uint64Length               = 8
 
 	// Prefix under which the versioned merkle state tree resides - tracking previous versions of history
 	treePrefix = "m"
@@ -219,7 +219,7 @@ func (s *State) Update(updater func(up Updatable) error) ([]byte, int64, error) 
 
 func (ws *writeState) commit() ([]byte, int64, error) {
 	// save state at a new version may still be orphaned before we save the version against the hash
-	hash, version, err := ws.state.tree.Save()
+	hash, version, err := stutterSave(ws.state.tree, ws.state.height)
 	if err != nil {
 		return nil, 0, err
 	}

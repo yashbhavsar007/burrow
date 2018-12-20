@@ -344,9 +344,10 @@ func (exe *executor) Commit(blockHash []byte, blockTime time.Time, header *abciT
 		"total_validator_power_change", totalPowerChange,
 		"total_validator_flow", totalFlow)
 	// TODO: revert this to straight equality by removing the initial write on MakeGenesisState
-	if uint64(version) != exe.blockchain.LastBlockHeight()+VersionOffset {
-		return nil, fmt.Errorf("state tree version %d does not equal blockchain height %d + 1 but that "+
-			"is meant to be a guaranteed invariant", version, exe.blockchain.LastBlockHeight())
+	expectedVersion := VersionAtHeight(exe.blockchain.LastBlockHeight())
+	if version != expectedVersion {
+		return nil, fmt.Errorf("state tree version %d does not equal expected version %d",
+			version, exe.blockchain.LastBlockHeight())
 	}
 
 	return hash, nil
