@@ -219,7 +219,7 @@ func (s *State) Update(updater func(up Updatable) error) ([]byte, int64, error) 
 
 func (ws *writeState) commit() ([]byte, int64, error) {
 	// save state at a new version may still be orphaned before we save the version against the hash
-	hash, version, err := stutterSave(ws.state.tree, ws.state.height)
+	hash, version, err := stutterSave(ws.state.tree)
 	if err != nil {
 		return nil, 0, err
 	}

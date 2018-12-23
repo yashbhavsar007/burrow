@@ -8,9 +8,15 @@ import (
 const StutterHeight uint64 = 480000
 const StutterBy = 2
 
-func stutterSave(tree *storage.RWTree, height uint64) (hash []byte, version int64, err error) {
+var stutterVersion int64
+
+func init() {
+	stutterVersion = VersionAtHeight(StutterHeight-1)
+}
+
+func stutterSave(tree *storage.RWTree) (hash []byte, version int64, err error) {
 	saves := 1
-	if height == StutterHeight {
+	if tree.Version() == stutterVersion {
 		saves += StutterBy
 	}
 	for i := 0; i < saves; i++ {
