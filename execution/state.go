@@ -16,6 +16,7 @@ package execution
 
 import (
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -104,7 +105,7 @@ type State struct {
 	// Last seen height from GetBlock
 	height uint64
 	// Values not reassigned
-	sync.RWMutex
+	sync.Mutex
 	StateTree
 	writeState *writeState
 	db         dbm.DB
@@ -140,10 +141,6 @@ func NewState(db dbm.DB) *State {
 
 // Make genesis state from GenesisDoc and save to DB
 func MakeGenesisState(db dbm.DB, genesisDoc *genesis.GenesisDoc) (*State, error) {
-	if len(genesisDoc.Validators) == 0 {
-		return nil, fmt.Errorf("the genesis file has no validators")
-	}
-
 	s := NewState(db)
 
 	// Make accounts state tree
@@ -193,27 +190,67 @@ func (s *State) LoadDump(filename string) error {
 		return err
 	}
 
-	tx := exec.TxExecution{TxHash: make([]byte, 32)}
+	tx := exec.TxExecution{
+		TxType: payload.TypeCall,
+		TxHash: make([]byte, 32),
+	}
 
-	for {
+	apply := func(row dump.Dump) error {
+		if row.Account != nil {
+			if row.Account.Address != acm.GlobalPermissionsAddress {
+				return s.writeState.UpdateAccount(row.Account)
+			}
+		}
+		if row.AccountStorage != nil {
+			return s.writeState.SetStorage(row.AccountStorage.Address, row.AccountStorage.Storage.Key, row.AccountStorage.Storage.Value)
+		}
+		if row.Name != nil {
+			return s.writeState.UpdateName(row.Name)
+		}
+		if row.EVMEvent != nil {
+			tx.Events = append(tx.Events, &exec.Event{
+				Header: &exec.Header{
+					TxType:    payload.TypeCall,
+					EventType: exec.TypeLog,
+					Height:    row.Height,
+				},
+				Log: row.EVMEvent,
+			})
+		}
+		return nil
+	}
+
+	// first try amino
+	first := true
+
+	for err == nil {
 		var row dump.Dump
 
-		_, err = cdc.UnmarshalBinaryLengthPrefixedReader(f, &row, 0)
+		_, err = cdc.UnmarshalBinaryReader(f, &row, 0)
 		if err != nil {
 			break
 		}
 
-		if row.Account != nil {
-			s.writeState.UpdateAccount(row.Account)
-		}
-		if row.AccountStorage != nil {
-			s.writeState.SetStorage(row.AccountStorage.Address, row.AccountStorage.Storage.Key, row.AccountStorage.Storage.Value)
-		}
-		if row.Name != nil {
-			s.writeState.UpdateName(row.Name)
-		}
-		if row.EVMEvent != nil {
-			tx.Events = append(tx.Events, &exec.Event{Log: row.EVMEvent.Event})
+		first = false
+		err = apply(row)
+	}
+
+	// if we failed at the first row, try json
+	if err != io.EOF && first {
+		err = nil
+		f.Seek(0, 0)
+
+		decoder := json.NewDecoder(f)
+
+		for err == nil {
+			var row dump.Dump
+
+			err = decoder.Decode(&row)
+			if err != nil {
+				break
+			}
+
+			err = apply(row)
 		}
 	}
 

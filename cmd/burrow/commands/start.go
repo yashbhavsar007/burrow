@@ -13,9 +13,7 @@ func Start(output Output) func(cmd *cli.Cmd) {
 
 		configOpt := cmd.StringOpt("c config", "", "Use the a specified burrow config file")
 
-		restoreDumpOpt := cmd.StringOpt("restore-dump", "", "Restore new chain from backup")
-
-		cmd.Spec = "[--config=<config file>] [--genesis=<genesis json file>] [--restore-dump=<burrow dump file>]"
+		cmd.Spec = "[--config=<config file>] [--genesis=<genesis json file>]"
 
 		configOpts := addConfigOptions(cmd)
 
@@ -39,7 +37,7 @@ func Start(output Output) func(cmd *cli.Cmd) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			kern, err := conf.Kernel(ctx, *restoreDumpOpt)
+			kern, err := conf.Kernel(ctx)
 			if err != nil {
 				output.Fatalf("could not create Burrow kernel: %v", err)
 			}
@@ -48,7 +46,6 @@ func Start(output Output) func(cmd *cli.Cmd) {
 			if err != nil {
 				output.Fatalf("could not boot Burrow kernel: %v", err)
 			}
-
 			kern.WaitForShutdown()
 		}
 	}

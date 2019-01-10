@@ -16,7 +16,6 @@ package genesis
 
 import (
 	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"sort"
@@ -68,8 +67,6 @@ type params struct {
 type GenesisDoc struct {
 	GenesisTime       time.Time
 	ChainName         string
-	AppHash           string `json:",omitempty" toml:",omitempty"`
-	hash              []byte
 	Params            params `json:",omitempty" toml:",omitempty"`
 	Salt              []byte `json:",omitempty" toml:",omitempty"`
 	GlobalPermissions permission.AccountPermissions
@@ -93,16 +90,13 @@ func (genesisDoc *GenesisDoc) JSONBytes() ([]byte, error) {
 }
 
 func (genesisDoc *GenesisDoc) Hash() []byte {
-	if genesisDoc.hash == nil {
-		genesisDocBytes, err := genesisDoc.JSONBytes()
-		if err != nil {
-			panic(fmt.Errorf("could not create hash of GenesisDoc: %v", err))
-		}
-		hasher := sha256.New()
-		hasher.Write(genesisDocBytes)
-		genesisDoc.hash = hasher.Sum(nil)
+	genesisDocBytes, err := genesisDoc.JSONBytes()
+	if err != nil {
+		panic(fmt.Errorf("could not create hash of GenesisDoc: %v", err))
 	}
-	return genesisDoc.hash
+	hasher := sha256.New()
+	hasher.Write(genesisDocBytes)
+	return hasher.Sum(nil)
 }
 
 func (genesisDoc *GenesisDoc) ShortHash() []byte {
@@ -122,16 +116,7 @@ func GenesisDocFromJSON(jsonBlob []byte) (*GenesisDoc, error) {
 	if err != nil {
 		return nil, fmt.Errorf("couldn't read GenesisDoc: %v", err)
 	}
-	if genDoc.AppHash != "" {
-		bs, err := hex.DecodeString(genDoc.AppHash)
-		if err != nil || len(bs) != sha256.Size {
-			return nil, fmt.Errorf("AppHash field is not valid hash")
-		}
-		genDoc.hash = bs
-	}
-
 	return genDoc, nil
-
 }
 
 //------------------------------------------------------------
@@ -158,15 +143,6 @@ func (genesisAccount *Account) Clone() Account {
 		},
 		Name:        genesisAccount.Name,
 		Permissions: genesisAccount.Permissions.Clone(),
-	}
-}
-
-func (genesisAccount *Account) AcmAccount() *acm.Account {
-	return &acm.Account{
-		Address:     genesisAccount.Address,
-		PublicKey:   genesisAccount.PublicKey,
-		Balance:     genesisAccount.Amount,
-		Permissions: genesisAccount.Permissions,
 	}
 }
 
