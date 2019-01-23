@@ -29,7 +29,7 @@ func Dump(output Output) func(cmd *cli.Cmd) {
 		s := execution.NewState(db.NewMemDB())
 
 		cmd.Action = func() {
-			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 			defer cancel()
 
 			var opts []grpc.DialOption
