@@ -3,10 +3,11 @@ package storage
 import (
 	"bytes"
 	"sort"
+	"sync"
 )
 
 type KVCache struct {
-	cache map[string]valueInfo
+	cache sync.Map
 }
 
 type valueInfo struct {
@@ -17,38 +18,50 @@ type valueInfo struct {
 // Creates an in-memory cache wrapping a map that stores the provided tombstone value for deleted keys
 func NewKVCache() *KVCache {
 	return &KVCache{
-		cache: make(map[string]valueInfo),
+		cache: sync.Map{},
 	}
 }
 
 func (kvc *KVCache) Info(key []byte) (value []byte, deleted bool) {
-	vi := kvc.cache[string(key)]
+	result, ok := kvc.cache.Load(string(key))
+	if !ok {
+		return nil, false
+	}
+
+	vi := result.(valueInfo)
 	return vi.value, vi.deleted
 }
 
 func (kvc *KVCache) Get(key []byte) []byte {
-	return kvc.cache[string(key)].value
+	result, ok := kvc.cache.Load(string(key))
+	if !ok {
+		return nil
+	}
+
+	vi := result.(valueInfo)
+	return vi.value
 }
 
 func (kvc *KVCache) Has(key []byte) bool {
-	vi, ok := kvc.cache[string(key)]
-	return ok && !vi.deleted
+	result, ok := kvc.cache.Load(string(key))
+	return ok && !result.(valueInfo).deleted
 }
 
 func (kvc *KVCache) Set(key, value []byte) {
 	skey := string(key)
-	vi := kvc.cache[skey]
-	vi.deleted = false
-	vi.value = value
-	kvc.cache[skey] = vi
+	vi := valueInfo{
+		deleted: false,
+		value:   value,
+	}
+	kvc.cache.Store(skey, vi)
 }
 
 func (kvc *KVCache) Delete(key []byte) {
 	skey := string(key)
-	vi := kvc.cache[skey]
-	vi.deleted = true
-	vi.value = nil
-	kvc.cache[skey] = vi
+	vi := valueInfo{
+		deleted: true,
+	}
+	kvc.cache.Store(skey, vi)
 }
 
 func (kvc *KVCache) Iterator(start, end []byte) KVIterator {
@@ -71,22 +84,24 @@ func (kvc *KVCache) newIterator(start, end []byte) *KVCacheIterator {
 
 // Writes contents of cache to backend without flushing the cache
 func (kvi *KVCache) WriteTo(writer KVWriter) {
-	for k, vi := range kvi.cache {
-		kb := []byte(k)
+	kvi.cache.Range(func(k, value interface{}) bool {
+		kb := []byte(k.(string))
+		vi := value.(valueInfo)
 		if vi.deleted {
 			writer.Delete(kb)
 		} else {
 			writer.Set(kb, vi.value)
 		}
-	}
+		return true
+	})
 }
 
 func (kvc *KVCache) Reset() {
-	kvc.cache = make(map[string]valueInfo)
+	kvc.cache = sync.Map{}
 }
 
 type KVCacheIterator struct {
-	cache map[string]valueInfo
+	cache sync.Map
 	start []byte
 	end   []byte
 	keys  [][]byte
@@ -99,8 +114,13 @@ func (kvi *KVCacheIterator) Domain() ([]byte, []byte) {
 
 func (kvi *KVCacheIterator) Info() (key, value []byte, deleted bool) {
 	key = kvi.keys[kvi.index]
-	vi := kvi.cache[string(key)]
-	return key, vi.value, vi.deleted
+	result, ok := kvi.cache.Load(string(key))
+	if ok {
+		vi := result.(valueInfo)
+		return key, vi.value, vi.deleted
+	} else {
+		return key, nil, false
+	}
 }
 
 func (kvi *KVCacheIterator) Key() []byte {
@@ -108,7 +128,12 @@ func (kvi *KVCacheIterator) Key() []byte {
 }
 
 func (kvi *KVCacheIterator) Value() []byte {
-	return kvi.cache[string(kvi.keys[kvi.index])].value
+	result, ok := kvi.cache.Load(string(kvi.keys[kvi.index]))
+	if ok {
+		return result.(valueInfo).value
+	} else {
+		return nil
+	}
 }
 
 func (kvi *KVCacheIterator) Next() {
@@ -139,10 +164,11 @@ func (bss byteSlices) Swap(i, j int) {
 }
 
 func (kvc *KVCache) SortedKeys(reverse bool) [][]byte {
-	keys := make(byteSlices, 0, len(kvc.cache))
-	for k := range kvc.cache {
-		keys = append(keys, []byte(k))
-	}
+	keys := make(byteSlices, 0, 0)
+	kvc.cache.Range(func(k, value interface{}) bool {
+		keys = append(keys, []byte(k.(string)))
+		return true
+	})
 	var sortable sort.Interface = keys
 	if reverse {
 		sortable = sort.Reverse(keys)
