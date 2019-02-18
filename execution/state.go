@@ -219,7 +219,7 @@ func (s *State) LoadDump(filename string) error {
 					EventType: exec.TypeLog,
 					Height:    row.Height,
 				},
-				Log: row.EVMEvent,
+				Log: row.EVMEvent.Event,
 			})
 		}
 		return nil

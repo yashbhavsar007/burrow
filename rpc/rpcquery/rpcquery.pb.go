@@ -47,7 +47,7 @@ func (m *StatusParam) Reset()         { *m = StatusParam{} }
 func (m *StatusParam) String() string { return proto.CompactTextString(m) }
 func (*StatusParam) ProtoMessage()    {}
 func (*StatusParam) Descriptor() ([]byte, []int) {
-	return fileDescriptor_rpcquery_cb31e54d800faa17, []int{0}
+	return fileDescriptor_rpcquery_52ee777806ad7e3b, []int{0}
 }
 func (m *StatusParam) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -105,7 +105,7 @@ func (m *GetAccountParam) Reset()         { *m = GetAccountParam{} }
 func (m *GetAccountParam) String() string { return proto.CompactTextString(m) }
 func (*GetAccountParam) ProtoMessage()    {}
 func (*GetAccountParam) Descriptor() ([]byte, []int) {
-	return fileDescriptor_rpcquery_cb31e54d800faa17, []int{1}
+	return fileDescriptor_rpcquery_52ee777806ad7e3b, []int{1}
 }
 func (m *GetAccountParam) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -149,7 +149,7 @@ func (m *ListAccountsParam) Reset()         { *m = ListAccountsParam{} }
 func (m *ListAccountsParam) String() string { return proto.CompactTextString(m) }
 func (*ListAccountsParam) ProtoMessage()    {}
 func (*ListAccountsParam) Descriptor() ([]byte, []int) {
-	return fileDescriptor_rpcquery_cb31e54d800faa17, []int{2}
+	return fileDescriptor_rpcquery_52ee777806ad7e3b, []int{2}
 }
 func (m *ListAccountsParam) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -200,7 +200,7 @@ func (m *GetNameParam) Reset()         { *m = GetNameParam{} }
 func (m *GetNameParam) String() string { return proto.CompactTextString(m) }
 func (*GetNameParam) ProtoMessage()    {}
 func (*GetNameParam) Descriptor() ([]byte, []int) {
-	return fileDescriptor_rpcquery_cb31e54d800faa17, []int{3}
+	return fileDescriptor_rpcquery_52ee777806ad7e3b, []int{3}
 }
 func (m *GetNameParam) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -251,7 +251,7 @@ func (m *ListNamesParam) Reset()         { *m = ListNamesParam{} }
 func (m *ListNamesParam) String() string { return proto.CompactTextString(m) }
 func (*ListNamesParam) ProtoMessage()    {}
 func (*ListNamesParam) Descriptor() ([]byte, []int) {
-	return fileDescriptor_rpcquery_cb31e54d800faa17, []int{4}
+	return fileDescriptor_rpcquery_52ee777806ad7e3b, []int{4}
 }
 func (m *ListNamesParam) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -302,7 +302,7 @@ func (m *GetValidatorSetParam) Reset()         { *m = GetValidatorSetParam{} }
 func (m *GetValidatorSetParam) String() string { return proto.CompactTextString(m) }
 func (*GetValidatorSetParam) ProtoMessage()    {}
 func (*GetValidatorSetParam) Descriptor() ([]byte, []int) {
-	return fileDescriptor_rpcquery_cb31e54d800faa17, []int{5}
+	return fileDescriptor_rpcquery_52ee777806ad7e3b, []int{5}
 }
 func (m *GetValidatorSetParam) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -355,7 +355,7 @@ func (m *ValidatorSet) Reset()         { *m = ValidatorSet{} }
 func (m *ValidatorSet) String() string { return proto.CompactTextString(m) }
 func (*ValidatorSet) ProtoMessage()    {}
 func (*ValidatorSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_rpcquery_cb31e54d800faa17, []int{6}
+	return fileDescriptor_rpcquery_52ee777806ad7e3b, []int{6}
 }
 func (m *ValidatorSet) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -420,7 +420,7 @@ func (m *ValidatorSetDeltas) Reset()         { *m = ValidatorSetDeltas{} }
 func (m *ValidatorSetDeltas) String() string { return proto.CompactTextString(m) }
 func (*ValidatorSetDeltas) ProtoMessage()    {}
 func (*ValidatorSetDeltas) Descriptor() ([]byte, []int) {
-	return fileDescriptor_rpcquery_cb31e54d800faa17, []int{7}
+	return fileDescriptor_rpcquery_52ee777806ad7e3b, []int{7}
 }
 func (m *ValidatorSetDeltas) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -471,7 +471,7 @@ func (m *GetProposalParam) Reset()         { *m = GetProposalParam{} }
 func (m *GetProposalParam) String() string { return proto.CompactTextString(m) }
 func (*GetProposalParam) ProtoMessage()    {}
 func (*GetProposalParam) Descriptor() ([]byte, []int) {
-	return fileDescriptor_rpcquery_cb31e54d800faa17, []int{8}
+	return fileDescriptor_rpcquery_52ee777806ad7e3b, []int{8}
 }
 func (m *GetProposalParam) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -522,7 +522,7 @@ func (m *ListProposalsParam) Reset()         { *m = ListProposalsParam{} }
 func (m *ListProposalsParam) String() string { return proto.CompactTextString(m) }
 func (*ListProposalsParam) ProtoMessage()    {}
 func (*ListProposalsParam) Descriptor() ([]byte, []int) {
-	return fileDescriptor_rpcquery_cb31e54d800faa17, []int{9}
+	return fileDescriptor_rpcquery_52ee777806ad7e3b, []int{9}
 }
 func (m *ListProposalsParam) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -574,7 +574,7 @@ func (m *ProposalResult) Reset()         { *m = ProposalResult{} }
 func (m *ProposalResult) String() string { return proto.CompactTextString(m) }
 func (*ProposalResult) ProtoMessage()    {}
 func (*ProposalResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_rpcquery_cb31e54d800faa17, []int{10}
+	return fileDescriptor_rpcquery_52ee777806ad7e3b, []int{10}
 }
 func (m *ProposalResult) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -2685,10 +2685,10 @@ var (
 	ErrIntOverflowRpcquery   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("rpcquery.proto", fileDescriptor_rpcquery_cb31e54d800faa17) }
-func init() { golang_proto.RegisterFile("rpcquery.proto", fileDescriptor_rpcquery_cb31e54d800faa17) }
+func init() { proto.RegisterFile("rpcquery.proto", fileDescriptor_rpcquery_52ee777806ad7e3b) }
+func init() { golang_proto.RegisterFile("rpcquery.proto", fileDescriptor_rpcquery_52ee777806ad7e3b) }
 
-var fileDescriptor_rpcquery_cb31e54d800faa17 = []byte{
+var fileDescriptor_rpcquery_52ee777806ad7e3b = []byte{
 	// 657 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x54, 0xc1, 0x6e, 0xd3, 0x40,
 	0x10, 0xc5, 0x4d, 0x49, 0xdb, 0x49, 0x9a, 0xd0, 0xa1, 0x54, 0xc5, 0x54, 0x69, 0xe5, 0x43, 0x28,
