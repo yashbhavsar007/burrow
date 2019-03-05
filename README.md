@@ -54,10 +54,6 @@ Burrow getting started documentation is available in the [docs](docs/README.md) 
 
 We welcome any and all contributions. Read the [contributing file](.github/CONTRIBUTING.md) for more information on making your first Pull Request to Burrow!
 
-You can find us on:
-- [Hyperledger Chat](https://chat.hyperledger.org)
-- [Hyperledger Mailing List](https://lists.hyperledger.org/mailman/listinfo)
-- [here on Github](https://github.com/hyperledger/burrow/issues)
 
 ## Future work
 
