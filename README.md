@@ -60,5 +60,9 @@ We welcome any and all contributions. Read the [contributing file](.github/CONTR
 For some (slightly outdated) ideas on future work, see the [proposals document](docs/PROPOSALS.md).
 
 ## License
+You can find us on:
+- [Hyperledger Chat](https://chat.hyperledger.org)
+- [Hyperledger Mailing List](https://lists.hyperledger.org/mailman/listinfo)
+- [here on Github](https://github.com/hyperledger/burrow/issues)
 
 [Apache 2.0](LICENSE.md)
